@@ -36,6 +36,7 @@ textarea:focus{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	margin-top: 2em;
 }
 
 .search-form{
@@ -99,12 +100,12 @@ textarea:focus{
 
 .note-header button{
 	color: white;
-	margin: 0 0 0 0.5em;
+	margin: 0 0.25em;
 	font-size: 1em;
 }
 
 .note-header button:first-child{
-	margin: 0 0.25em 0 0;
+	margin: 0 0.5em 0 0;
 }
 
 .note-text{
@@ -113,4 +114,13 @@ textarea:focus{
 	height: 10em;
 	font-size: 1em;
 	width: 100%;
+}
+
+.toggle-open{
+	display: flex;
+	align-items: center;
+}
+
+.note-header-color{
+	width: 2em;
 }

@@ -25,7 +25,8 @@ import Note from './Note'
 function Main() {
 	// const [searchQuery, setSearchQuery] = useState('')
 	const [notes, setNotes] = useState(() => {
-		return JSON.parse(localStorage.getItem('notes')) || []
+		const localNotes = localStorage.getItem('notes')
+		return localNotes === 'undefined' ? [] : JSON.parse(localNotes)
 	})
 
 	useEffect(() => {
@@ -51,7 +52,28 @@ function Main() {
 	}
 
 	const addNewNote = () => {
-		setNotes(prevNotes => [...prevNotes, { _id: nanoid(), text: 'New Note', isOpen: true }])
+		setNotes(prevNotes => [...prevNotes, { 
+			_id: nanoid(), 
+			color: '#191919', 
+			text: 'New Note', 
+			isOpen: true 
+		}])
+	}
+
+	const changeColor = (color, _id) => {
+		setNotes(prevNotes => {
+			return prevNotes.map(note => {
+				return _id === note._id ? { ...note, color: color } : note
+			})
+		})
+	}
+
+	const toggleOpen = (_id) => {
+		setNotes(prevNotes => {
+			return prevNotes.map(note => {
+				return _id === note._id ? { ...note, isOpen: !note.isOpen } : note
+			})
+		})
 	}
 
 	// const handleSubmit = (ev) => {
@@ -59,12 +81,16 @@ function Main() {
 	// 	setSearchQuery('')
 	// }
 
-	const notesElements = notes.map((note, idx) => (
+	const notesElements = notes?.map((note, idx) => (
 		<Note 
 			text={note.text}
 			key={note._id}
+			color={note.color}
+			isOpen={note.isOpen}
 			handleSubmit={(text) => updateNote(text, note._id)}
-			handleDelete={() => deleteNote(note._id)} 
+			handleDelete={() => deleteNote(note._id)}
+			toggleOpen={() => toggleOpen(note._id)}
+			changeColor={(color) => changeColor(color, note._id)}
 		/>
 	))
 
