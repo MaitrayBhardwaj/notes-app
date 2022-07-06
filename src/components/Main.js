@@ -4,38 +4,19 @@ import { nanoid } from 'nanoid'
 
 import Note from './Note'
 
-// const kmpSearch = (pattern, text) => {
-// 	if (pattern.length === 0){
-// 		return false;
-// 	}
-// 	let j = 0;
-// 	for(let i = 0; i < text.length; i++) {
-// 	    if(text.charAt(i) !== pattern.charAt(j)){
-// 	    	j = 0;
-// 	    }
-// 	    if(text.charAt(i) === pattern.charAt(j)) {
-// 	      	j++;
-// 	    	if(j === pattern.length)
-// 	        	return true;
-// 	    }
-//   	}
-// 	return false;
-// }
-
 function Main() {
-	// const [searchQuery, setSearchQuery] = useState('')
+	 const [searchQuery, setSearchQuery] = useState('')
 	const [notes, setNotes] = useState(() => {
-		const localNotes = localStorage.getItem('notes')
-		return localNotes === 'undefined' ? [] : JSON.parse(localNotes)
+		return JSON.parse(localStorage.getItem('notes')) || []
 	})
 
 	useEffect(() => {
 		localStorage.setItem("notes", JSON.stringify(notes))
 	}, [notes])
 
-	// const handleChange = (ev) => {
-	// 	setSearchQuery(ev.target.value)
-	// }
+	 const handleChange = (ev) => {
+	 	setSearchQuery(ev.target.value)
+	 }
 
 	const updateNote = (text, _id) => {
 		setNotes(prevNotes => (
@@ -76,29 +57,45 @@ function Main() {
 		})
 	}
 
-	// const handleSubmit = (ev) => {
-	// 	ev.preventDefault()
-	// 	setSearchQuery('')
-	// }
+	 const handleSubmit = (ev) => {
+	 	ev.preventDefault()
+	 }
 
-	const notesElements = notes?.map((note, idx) => (
-		<Note 
-			text={note.text}
-			key={note._id}
-			color={note.color}
-			isOpen={note.isOpen}
-			handleSubmit={(text) => updateNote(text, note._id)}
-			handleDelete={() => deleteNote(note._id)}
-			toggleOpen={() => toggleOpen(note._id)}
-			changeColor={(color) => changeColor(color, note._id)}
-		/>
-	))
+	const notesElements = (() => {
+		const queriedNotes = notes.filter(note => note.text.includes(searchQuery))
+		return queriedNotes.map(note => (
+			<Note 
+				text={note.text}
+				key={note._id}
+				color={note.color}
+				isOpen={note.isOpen}
+				handleSubmit={(text) => updateNote(text, note._id)}
+				handleDelete={() => deleteNote(note._id)}
+				toggleOpen={() => toggleOpen(note._id)}
+				changeColor={(color) => changeColor(color, note._id)}
+			/>
+		))
+	})()
+
+	const notFound = (
+		<div className="notFound">
+			No notes found.
+		</div>
+	)
 
 	return (
 		<div className="main">
+			<form className="search-form" onSubmit={handleSubmit}>
+				<input 
+					type="text"
+					placeholder="Search Notes..."
+					className="searchbar"
+					onChange={handleChange}
+					value={searchQuery} />
+			</form>
 			<button className="addNote" onClick={addNewNote}><FaPlus /></button>
 			<div className="notes">
-				{ notesElements }
+				{ notesElements.length === 0 ? notFound : notesElements }
 			</div>
 		</div>
 	)
@@ -106,12 +103,3 @@ function Main() {
 
 export default Main
 
-
-// <form className="search-form" onSubmit={handleSubmit}>
-// 	<input 
-// 		type="text"
-// 		placeholder="Search Notes..."
-// 		className="searchbar"
-// 		onChange={handleChange}
-// 		value={searchQuery} />
-// </form>

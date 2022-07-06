@@ -124,3 +124,10 @@ textarea:focus{
 .note-header-color{
 	width: 2em;
 }
+
+.notFound{
+	padding: 1em 7em;
+	margin-top: 3em;
+	border-radius: 2em;
+	background-color: #CCC;
+}
